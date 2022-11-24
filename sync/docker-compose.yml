@@ -23,7 +23,7 @@ services:
       - NET_ADMIN
     command: bash -c "
         python manage.py migrate
-        && python -m gunicorn s_django.wsgi --workers 1 --threads 1 -b 0.0.0.0:8000"
+        && python -m gunicorn s_django.wsgi --workers 1 --threads 1 -b 0.0.0.0:8000 --timeout 180"
     ports:
       - 8000:8000
     environment:
