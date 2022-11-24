@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  db:
+    build: .
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    user: postgres
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  async:
+    build: ./src/
+    cap_add:
+      - NET_ADMIN
+    command: bash -c "
+        python manage.py migrate
+        && python -m gunicorn a_django.asgi:application -k uvicorn.workers.UvicornWorker --workers 1 --threads 1 -b 0.0.0.0:8000 --timeout 180"
+    ports:
+      - 8000:8000
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+  load:
+    build: ./tests/
+    command: locust --web-host 0.0.0.0 --web-port 8089
+    ports:
+      - 8089:8089
