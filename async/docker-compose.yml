@@ -3,6 +3,7 @@ version: "3.8"
 services:
   db:
     build: .
+    shm_size: 1g
     cap_add:
       - NET_ADMIN
     environment:
