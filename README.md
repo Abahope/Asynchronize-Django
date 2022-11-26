@@ -86,33 +86,35 @@ See code in the repository @ https://github.com/nalkhish/Asynchronize-Django
 
 **Table 1: CPU-bound.** Maximum successful requests per second for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). Async actually does poorly.
 
-| Added latency (ms) | Sync | Async
-| ----------- | ----------- | ----------- |
-| 0 | 1.5 | 0.1|
-| 100  | 1.5 | 0.2|
-| 200  | 1.5 | 0.5|
+| Added latency (ms) | Sync | Async | Async Unlimited
+| ----------- | ----------- | ----------- | ----------- |
+| 0 | 1.5 | 0.1|  3.3
+| 100  | 1.5 | 0.2| 1.3
+| 200  | 1.5 | 0.5| 2.7
 
 **Table 2: I/O-bound DB create** Maximum successful requests per second for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
 
-| Added latency (ms) | Sync | Async
-| ----------- | ----------- | ----------- |
-| 0 | 143.6 | 188.8|
-| 100 | 1.4 | 129.0|
-| 200 | 0.7 | 82.6|
+| Added latency (ms) | Sync | Async | Async Unlimited
+| ----------- | ----------- | ----------- | ----------- 
+| 0 | 143.6 | 188.8| 187.5
+| 100 | 1.4 | 129.0| 171.4
+| 200 | 0.7 | 82.6| 185
 
 **Table 3: I/O-bound DB read.** Maximum successful requests per second for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
 
-| Added latency (ms) | Sync | Async
-| ----------- | ----------- | ----------- |
-| 0 | 23.0 | 28.3|
-| 100 | 1.2 | 28.6|
-| 200 | 0.6 | 28.4|
+| Added latency (ms) | Sync | Async | Async Unlimited
+| ----------- | ----------- | ----------- | ----------- |
+| 0 | 23.0 | 28.3| 34.1
+| 100 | 1.2 | 28.6| 36
+| 200 | 0.6 | 28.4| 34.2
 
 ## Discussion (WIP):
 
 ### Similar studies (WIP)
 ### Interpretation (WIP)
 ### Limitations (WIP)
+
+Maximum successful requests per second does not tell the full story, but it's simple to understand
 
 * No inbound latency
 * Limited by client max# config: high I/O routes (IO_Create and IO_Read) were capped by failures resulting from too many simultaneous connections between server and DB ( django.db.utils.OperationalError: FATAL:  sorry, too many clients already). 
