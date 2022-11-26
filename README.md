@@ -79,14 +79,34 @@ See code in the repository @ https://github.com/nalkhish/Asynchronize-Django
 
 ## Results:
 
-- Even with no added latency, Asynchronous design does better than Synchronous on high I/O routes.
-- Unlike sync, async is able to maintain the maximum number of successful requests per second despite increases in latency on I/O-dominated routes.
+- Async did pretty bad on cpu-bound routes (Table 1 and Supplementary figures in repo).
+- Even with no added latency, Async does better than Sync on high I/O routes (Tables 2 and 3).
+- Unlike sync, async is able to maintain the maximum number of successful requests per second despite increases in latency on I/O-dominated routes (Tables 2 and 3).
 
-![SyncVsAsync-1](https://user-images.githubusercontent.com/43485534/203694589-d6cf133f-6b66-4e6c-9237-36eb5e74e073.png)
 
+**Table 1: CPU-bound.** Maximum successful requests per second for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). Async actually does poorly.
 
-* Current limitation, WIP: 
+| Added latency (ms) | Sync | Async
+| ----------- | ----------- | ----------- |
+| 0 | 1.5 | 0.1|
+| 100  | 1.5 | 0.2|
+| 200  | 1.5 | 0.5|
 
+**Table 2: I/O-bound DB create** Maximum successful requests per second for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
+
+| Added latency (ms) | Sync | Async
+| ----------- | ----------- | ----------- |
+| 0 | 143.6 | 188.8|
+| 100 | 1.4 | 129.0|
+| 200 | 0.7 | 82.6|
+
+**Table 3: I/O-bound DB read.** Maximum successful requests per second for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
+
+| Added latency (ms) | Sync | Async
+| ----------- | ----------- | ----------- |
+| 0 | 23.0 | 28.3|
+| 100 | 1.2 | 28.6|
+| 200 | 0.6 | 28.4|
 
 ## Discussion (WIP):
 
