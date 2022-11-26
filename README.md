@@ -1,5 +1,6 @@
 # Asynchronize-Django
 
+*See sibling markdown file AdditionalNotes for additional information.*
 ## Introduction:
 * Python Web Server Backend Development can be accelerated by using popular frameworks such as :
     * FastAPI (51.9k stars, https://github.com/tiangolo/fastapi),
@@ -43,6 +44,7 @@
 
 * For Sync, Gunicorn was used to spin up 1 Sync worker (https://docs.gunicorn.org/en/stable/design.html).
 * For Async, Gunicorn was used to spin up 1 Uvicorn worker (https://www.uvicorn.org/deployment/)
+* For Async Unlimited, Gunicorn was used to spin up 1 Uvicorn worker (https://www.uvicorn.org/deployment/), but postgres was set up to allow 1000 simultaneous connections (more than default 100).
 
 ### Adding Latency
 
@@ -108,29 +110,27 @@ See code in the repository @ https://github.com/nalkhish/Asynchronize-Django
 | 100 | 1.2 | 28.6| 36
 | 200 | 0.6 | 28.4| 34.2
 
-## Discussion (WIP):
+## Discussion:
 
-### Similar studies (WIP)
-### Interpretation (WIP)
-### Limitations (WIP)
+### Similar studies:
 
-Maximum successful requests per second does not tell the full story, but it's simple to understand
+If you know of similar studies and would like to compare/contrast, make a PR!
 
-* No inbound latency
-* Limited by client max# config: high I/O routes (IO_Create and IO_Read) were capped by failures resulting from too many simultaneous connections between server and DB ( django.db.utils.OperationalError: FATAL:  sorry, too many clients already). 
+### Interpretation 
+
+* Async performed better than Sync on I/O bound requests because I/O requests did not block the server worker thread. This is by design of asyncio.
+* Async unlimited performed even better as postgres was allowed to have more connections than the web server can process. For this reason, Async unlimited did not drop off as latency increased.
+
+### Limitations
+
+* Maximum successful requests per second does not tell the full story, but it's simple to understand. 
+    * To really understand server throughput, considerations should include the progression of concurrent users per time, requests per time, and latency. For those interested, this information can be retrieved from the supplementary figures.
+    * Maximum successful requests per second is simple to understand because it does not change as we increase the number of concurrent users. In contrast, latency increases. Therefore, if we want to minimize latency, we can theoretically set server worker threads to scale based on the number of concurrent active users (active as in constantly bombarding that route like Locust). This is not easy in practice, and so we ought to maximize succesful requests per second and then scale on I/O.
+
+* Inbound latency was not added, but it's unnecessary.
+    * Inbound latency was not added as there was no straightforward/recommended way to do that.
+    * It's unnecessary because outbound latency sufficiently models the real-world dynamics of having to wait as packets are hopping along the connection. In that system, adding inbound latency to a receiving container is equivalent to adding outbound latency to the origin container.
 
 ## Conclusion
 
 If you use Django and have I/O-bound loads, use Async.
-
-## Additional notes
-
-* For non-Python developers, Python has a global interpreter lock that prevents a process or its threads from accessing multiple CPU threads simultaneously.
-
-
-## Troubleshooting
-
-* If adding latency fails because of permission issues:
-    * Ensure your docker containers have NET_ADMIN capabilities enabled.
-    * Ensure your docker containers are using Mac M1 arch not amd64 (it would be tagged on docker desktop if it was amd64).
-    * Try it on something other than WSL2.
