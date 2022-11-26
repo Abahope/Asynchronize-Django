@@ -1,6 +1,12 @@
 # Asynchronize-Django
 
-*See sibling markdown file AdditionalNotes for additional information.*
+*An experiment showing the benefit of Asynchronous Django over Synchronous Django*
+
+![GitHub Repo stars](https://img.shields.io/github/stars/nalkhish/Asynchronize-DJango?style=social)
+
+![snake](https://user-images.githubusercontent.com/43485534/204110736-19e43fde-23c3-4a56-9aec-71f9dfdde965.png)
+
+
 ## Introduction:
 * Python Web Server Backend Development can be accelerated by using popular frameworks such as :
     * FastAPI (51.9k stars at Nov 26, 2022, https://github.com/tiangolo/fastapi),
@@ -165,4 +171,4 @@ If you know of similar studies and would like to compare/contrast, make a PR!
 
 ## Conclusion
 
-If you use Django and have CPU-bound loads, use Sync. Otherwise, if the loads are I/O-bound, use Async.
+If you use Django and have CPU-bound loads, use Sync. Otherwise, if the loads are I/O-bound, use Async. It will likely more than 10x your worker throughput.
