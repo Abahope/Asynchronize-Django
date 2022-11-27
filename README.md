@@ -100,7 +100,7 @@ See code in the repository @ https://github.com/nalkhish/Asynchronize-Django
 - On average across latencies, max sRPS was higher for Async Unlimited than Sync and Async Limited (Table 1).
 - On average across latencies, overall successes were higher for Sync than Async Limited and Async Unlimited (Table 1).
 - Latency only seemed to have an effect on Async Limited; adding 200ms latency approximately doubled max RPS and overall successes.
-- 
+  
 **Table 1: CPU-bound.** Max sRPS & Overall successes for combinations of setup (Sync/Async Limited/Async unlimited) and Latency (0ms, 100ms, 200ms). Async actually does poorly.
 
 | Added latency (ms) | Sync      | Async Limited | Async Unlimited |
@@ -116,7 +116,7 @@ See code in the repository @ https://github.com/nalkhish/Asynchronize-Django
 - In the I/O-bound create route, increasing latency decreased max sRPS and overall successes for Sync and Async Limited (Table 3). The effect was more noticable for Sync.
 
 
-**Table 2: I/O-bound DB read.** Maximum successful requests per second & Overall succesful requests for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
+**Table 2: I/O-bound DB read.** Max sRPS per second & Overall successes for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
 
 | Added latency (ms) | Sync         | Async Limited | Async Unlimited |
 | ------------------ | ------------ | ------------- | --------------- |
@@ -125,7 +125,7 @@ See code in the repository @ https://github.com/nalkhish/Asynchronize-Django
 | 200                | 0.6  & 105   | 28.4 & 4,312  | 34.2  & 5,123   |
 
 
-**Table 3: I/O-bound DB create** Maximum successful requests per second & Overall succesful requests for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
+**Table 3: I/O-bound DB create** Max sRPS per second & Overall successes for combinations of Server (Async/Sync) and Latency (0ms, 100ms, 200ms). There is a higher throughput at high latencies when using Async.
 
 | Added latency (ms) | Sync           | Async Limited  | Async Unlimited |
 | ------------------ | -------------- | -------------- | --------------- |
@@ -159,9 +159,9 @@ If you know of similar studies and would like to compare/contrast, make a PR!
   
 ### Limitations
 
-* Maximum successful requests per second does not tell the full story, but it's simple to understand. 
-    * To really understand server throughput, considerations should include the progression of concurrent users per time, requests per time, and latency. For those interested, this information can be retrieved from the supplementary figures.
-    * Maximum successful requests per second is simple to understand because it does not change as we increase the number of concurrent users. In contrast, latency increases. Therefore, if we want to minimize latency, we can theoretically set server worker threads to scale based on the number of concurrent active users (active as in constantly bombarding that route like Locust). This is not easy in practice, and so we ought to maximize succesful requests per second and then scale on I/O.
+* Max sRPS & Overall successes do not tell the full story, but they're simple to understand. 
+    * To really understand server throughput, considerations should include the progression of concurrent users per time, requests per time, and latency. For those interested, this information can be seen in the supplementary figures.
+    * Max sRPS and overall successes are simple to understand because they do not change as we increase the number of concurrent users. In contrast, latency increases. Therefore, if we want to minimize latency, we can theoretically set server worker threads to scale based on the number of concurrent active users (active as in constantly bombarding that route like Locust). This is not easy in practice, and so we ought to max sRPS & overall successes then scale based on I/O.
 * No retry logic:
   * For Async limited, the IO-bound create route was bottlenecked by the database. In a real-scenario, we would add retry logic for this reason. Nevertheless, this study aimed to identify the limits of the server setup. This can be done by focusing on the results of Async Unlimited.
 
